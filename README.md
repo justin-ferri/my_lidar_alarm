@@ -10,9 +10,11 @@ To make this example code more useful, interpretation of the LIDAR data should b
 single ping--e.g., examining a forward-motion corridor for evaluating safe forward motion with consideration
 of the width of the robot.
 
-## Example usage
+## Example usage_
 Start up the STDR simulator:
 `roslaunch stdr_launchers server_with_map_and_gui_plus_robot.launch`
+Start the reactive motion commander node:
+ `rosrun lidar_alarm my_reactive_commander.cpp`
 Start the lidar alarm node:
  `rosrun lidar_alarm lidar_alarm`
  Have the controller code monitor the `lidar_alarm` topic and do something intelligent with the information.

@@ -16,6 +16,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 # Executables
 cs_add_executable(my_lidar_alarm src/my_lidar_alarm.cpp)
+cs_add_executable(my_reactive_commander src/my_reactive_commander.cpp)
 #cs_add_executable(lidar_alarm2 src/lidar_alarm2.cpp)
 # target_link_library(example my_lib)
 
