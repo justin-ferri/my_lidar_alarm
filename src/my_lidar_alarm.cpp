@@ -7,10 +7,10 @@
 #include <std_msgs/Bool.h> // boolean message 
 
 
-const double MIN_SAFE_DISTANCE = 1.0; // set alarm if anything is within 0.5m of the front of robot
+const double MIN_SAFE_DISTANCE = 0.5; // set alarm if anything is within 0.5 m of the front of robot
 
 // these values to be set within the laser callback
-float ping_dist_in_front_=3.0; // global var to hold length of a SINGLE LIDAR ping--in front
+float ping_dist_in_front_= 3.0; // global var to hold length of a SINGLE LIDAR ping--in front
 int ping_index_= -1; // NOT real; callback will have to find this
 double angle_min_=0.0;
 double angle_max_=0.0;
@@ -39,16 +39,35 @@ void laserCallback(const sensor_msgs::LaserScan& laser_scan) {
         ROS_INFO("LIDAR setup: ping_index = %d",ping_index_);
         
     }
-    
-   ping_dist_in_front_ = laser_scan.ranges[ping_index_];
-   ROS_INFO("ping dist in front = %f",ping_dist_in_front_);
-   if (ping_dist_in_front_<MIN_SAFE_DISTANCE) {
-       ROS_WARN("DANGER, WILL ROBINSON!!");
-       laser_alarm_=true;
+   
+   //time to examine a corridor instead of one ping => use a loop to get many instead of one 
+
+   //define the bisect of pings (roughly, the count of pings is bisection_range_count * 2 + 1)
+   int bisection_ping_count = 25;
+
+   //initial ping should start at the furthest on one side and move towards the other side of the range
+   //the offset of the current ping is the index
+   int current_ping_offset = bisection_ping_count * (-1);
+   
+   //loop to go through different ping offsets
+   //no alarm should occur for the ping unless the distance in front of the robot < MIN_SAFE_DISTANCE
+   //if it is then laser_alarm_ will equal to true (a warning occurs that the robot will collide)
+   //it should also break out of the loop since once there is danger, the next position should be examined (in communication with a reactive_commander)
+   for(current_ping_offset = bisection_ping_count * (-1); current_ping_offset <= bisection_ping_count; current_ping_offset+=1){
+	   laser_alarm_=false;
+	   ping_index_ += current_ping_offset;
+	   ping_dist_in_front_ = laser_scan.ranges[ping_index_];
+	   ROS_INFO("ping dist in front = %f",ping_dist_in_front_);
+	   if (ping_dist_in_front_<MIN_SAFE_DISTANCE) {
+	       ROS_WARN("DANGER, WILL ROBINSON!!");
+	       laser_alarm_=true;
+	       break;
+	   }
    }
-   else {
-       laser_alarm_=false;
-   }
+
+   ROS_INFO("PING SET DONE");
+
+   //this should all stay the same from wsn's code - the laser_alarm_'s result is published here
    std_msgs::Bool lidar_alarm_msg;
    lidar_alarm_msg.data = laser_alarm_;
    lidar_alarm_publisher_.publish(lidar_alarm_msg);
