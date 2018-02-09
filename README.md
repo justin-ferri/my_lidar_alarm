@@ -1,5 +1,7 @@
 # my_lidar_alarm
 
+Add this package to your ROS workspace. Then, use catkin_make to compile.
+
 An extension to wsnewman's lidar_alarm where multiple pings (51) are being utilized to determine how the robot should move. To view a demonstration of the code, conduct the following commands:
 
 ## Example usage_
