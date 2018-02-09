@@ -1,22 +1,16 @@
-# lidar_alarm
+# my_lidar_alarm
 
-A simple, illustrative program to show how to subscribe to a LIDAR signal and interpret the signal.
-This code subscribes to topic `robot0/laser_0`, which is published by the Simple 2-D Robot simulator.
-The signal interpretation in this example merely looks at a single ping--straight ahead.  If this
-ping distance is less than some danger threshold, the lidar listener publishers a warning signal on
-topic `lidar_alarm`.  The distance of the forward ping is also published, on topic `lidar_dist`.
-
-To make this example code more useful, interpretation of the LIDAR data should be more general than a
-single ping--e.g., examining a forward-motion corridor for evaluating safe forward motion with consideration
-of the width of the robot.
+An extension to wsnewman's lidar_alarm where multiple pings (51) are being utilized to determine how the robot should move. To view a demonstration of the code, conduct the following commands:
 
 ## Example usage_
 Start up the STDR simulator:
 `roslaunch stdr_launchers server_with_map_and_gui_plus_robot.launch`
 Start the reactive motion commander node:
- `rosrun lidar_alarm my_reactive_commander.cpp`
+ `rosrun my_lidar_alarm my_reactive_commander`
 Start the lidar alarm node:
- `rosrun lidar_alarm lidar_alarm`
- Have the controller code monitor the `lidar_alarm` topic and do something intelligent with the information.
+ `rosrun my_lidar_alarm my_lidar_alarm`
+
+Note that my_reactive_commander is the same to wsnewman's except that I changed the yaw_rate slightly.
+
 
     
